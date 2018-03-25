@@ -1,0 +1,48 @@
+# 题目描述:输入某二叉树的前序遍历和中序遍历的结果，请重建出该二叉树。假设输入的前序遍历和中序遍历的结果中都不含重复的数字。
+# 例如输入前序遍历序列{1,2,4,7,3,5,6,8}和中序遍历序列{4,7,2,1,5,3,8,6}，则重建二叉树并返回。
+/**
+ * Definition for binary tree
+ * struct TreeNode {
+ *     int val;
+ *     TreeNode *left;
+ *     TreeNode *right;
+ *     TreeNode(int x) : val(x), left(NULL), right(NULL) {}
+ * };
+ */
+class Solution {
+public:
+    TreeNode* reConstructBinaryTree(vector<int> pre,vector<int> vin) {
+        if(pre.empty() || vin.empty())
+            return NULL;//如果二叉树的前序向量为空或者中序向量为空,不作任何处理
+        int count = 0;
+        for(int i = 0; i < vin.size(); i++)
+        {
+            if(pre[0] == vin[i])
+                count++;//统计根节点的个数.
+        }
+        if(count != 1)//如果没有根结点或者根节点的个数不止一个,直接返回
+            return NULL;
+        vector<int> pre_left , pre_right , vin_left , vin_right;
+        int val = pre[0];
+        TreeNode* root = new TreeNode(val);//创建根节点
+        int pos;//左枝节点个数
+        for(pos = 0; pos < vin.size(); pos++)
+        {
+            if(val == vin[pos])
+                break;//获取根的左枝,统计左枝节点个数
+        }
+        for(int i = 0; i < vin.size(); i++)
+        {
+            if(i < pos){
+                vin_left.push_back(vin[i]);
+                pre_left.push_back(pre[i+1]);
+            }else if(i > pos){
+                vin_right.push_back(vin[i]);
+                pre_right.push_back(pre[i]);
+            }
+        }
+        root->left = reConstructBinaryTree(pre_left , vin_left);
+        root->right = reConstructBinaryTree(pre_right , vin_right);
+        return root;
+    }
+};
